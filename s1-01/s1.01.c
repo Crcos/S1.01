@@ -36,7 +36,7 @@ typedef struct {
 // Structure représentant une absence
 typedef struct {
 	unsigned int id; // Identifiant unique de l'absence
-	unsigned int demi_journee; // Demi-journée concernée
+	unsigned unsigned int demi_journee; // Demi-journée concernée
 	unsigned int num_jour; // Numéro de jour concerné
 	char justificatif[MAX_JUSTIFICATIF_LENGTH]; // Justificatif (si enregistré)
 	unsigned int deja_valide; // Stock les absence_id deja validés
@@ -62,7 +62,7 @@ void inscription_etudiant(Etudiant etudiants[], char* nom, unsigned int groupe, 
 	// Assigne le groupe de l'étudiant
 	etudiants[nb_etudiants].groupe = groupe;
 	// Affiche un message de confirmation d'inscription
-	prunsigned intf("Inscription enregistree (%d)\n", nb_etudiants + 1);
+	printf("Inscription enregistree (%d)je \n", nb_etudiants + 1);
 }
 
 // Vérifie si l'étudiant est déjà inscrit avec le même nom et groupe
@@ -87,17 +87,17 @@ void enregistrement_absence(Etudiant etudiants[], unsigned int nb_etudiants, Abs
 		}
 	}
 	if (!etudiant_existe) {
-		prunsigned intf("Identifiant incorrect\n");
+		printf("Identifiant incorrect\n");
 		return;
 	}
 	// Vérifie si la demi-journée est valide
 	if (strcmp(demi_journee, "am") != 0 && strcmp(demi_journee, "pm") != 0) {
-		prunsigned intf("Demi-journee incorrecte\n");
+		printf("Demi-journee incorrecte\n");
 		return;
 	}
 	// Vérifie si le jour est dans la plage autorisée
 	if (num_jour < JOURS_MIN || num_jour > JOURS_MAX) {
-		prunsigned intf("Date incorrecte\n");
+		printf("Date incorrecte\n");
 		return;
 	}
 	// Vérifie si l'absence est déjà connue
@@ -105,7 +105,7 @@ void enregistrement_absence(Etudiant etudiants[], unsigned int nb_etudiants, Abs
 		if (absences[i].id == id_Etu && absences[i].num_jour == num_jour &&
 			((strcmp(demi_journee, "am") == 0 && absences[i].demi_journee == 0) ||
 				(strcmp(demi_journee, "pm") == 0 && absences[i].demi_journee == 1))) {
-			prunsigned intf("Absence deja connue\n");
+			printf("Absence deja connue\n");
 			return;
 		}
 	}
@@ -115,7 +115,7 @@ void enregistrement_absence(Etudiant etudiants[], unsigned int nb_etudiants, Abs
 	absences[*nb_absences].num_jour = num_jour;
 	absences[*nb_absences].demi_journee = (strcmp(demi_journee, "am") == 0) ? 0 : 1;
 	absences[*nb_absences].etat = JUSTIFICATIF_NON_RECU;
-	prunsigned intf("Absence enregistree [%d]\n", *nb_absences + 1);
+	printf("Absence enregistree [%d]\n", *nb_absences + 1);
 	(*nb_absences)++;
 }
 //** C3 **//
@@ -142,7 +142,7 @@ unsigned int compter_absence(Absence absences[], unsigned int jour_courant, unsi
 // Affiche le tableau d'étudiants complet et trié
 void liste_etudiants(Etudiant etudiants[], Absence absences[], unsigned int num_jour, unsigned int num_etudiants) {
 	if (num_etudiants == 0) {
-		prunsigned intf("Aucun inscrit\n");
+		printf("Aucun inscrit\n");
 		return;
 	}
 	Etudiant etudiants_copy[MAX_ETUDIANTS];
@@ -153,11 +153,11 @@ void liste_etudiants(Etudiant etudiants[], Absence absences[], unsigned int num_
 		qsort(etudiants_copy, num_etudiants, sizeof(Etudiant), compare_etudiants);
 		for (unsigned int i = 0; i < num_etudiants; i++) {
 			unsigned int absences_etudiant = compter_absence(absences, num_jour, etudiants_copy[i].id);
-			prunsigned intf("(%d) %-13s %2d %d\n", etudiants_copy[i].id, etudiants_copy[i].nom, etudiants_copy[i].groupe, absences_etudiant);
+			printf("(%d) %-13s %2d %d\n", etudiants_copy[i].id, etudiants_copy[i].nom, etudiants_copy[i].groupe, absences_etudiant);
 		}
 	}
 	else {
-		prunsigned intf("Date incorrecte\n");
+		printf("Date incorrecte\n");
 	}
 }
 
@@ -167,18 +167,18 @@ void depot_justificatif(Absence absences[], unsigned int nb_absence, unsigned in
 
 	// Vérifie si l'absence existe
 	if (absence_id <= 0 || absence_id > nb_absence) {
-		prunsigned intf("Identifiant incorrect\n");
+		printf("Identifiant incorrect\n");
 		return;
 	}
 	// Vérifie si un justificatif a déjà été déposé
 	if (absences[absence_id - 1].etat == JUSTIFICATIF_RECU && strlen(absences[absence_id - 1].justificatif) > 0) {
-		prunsigned intf("Justificatif deja connu\n");
+		printf("Justificatif deja connu\n");
 		return;
 	}
 	// Vérifie si la date du justificatif est correcte (après la date d'absence)
 	for (unsigned int i = 0; i < nb_absence; i++) {
 		if (num_jour < absences[i].num_jour) {
-			prunsigned intf("Date incorrecte\n");
+			printf("Date incorrecte\n");
 			return;
 		}
 	}
@@ -186,11 +186,11 @@ void depot_justificatif(Absence absences[], unsigned int nb_absence, unsigned in
 	// Vérifie si le dépôt du justificatif est dans le délai autorisé
 	if (num_jour > absences[absence_id - 1].num_jour + DELAIS_JUSTIFICATIF) {
 		absences[absence_id - 1].etat = NON_VALIDE; // Justificatif déposé trop tard => absence non justifiée
-		prunsigned intf("Justificatif enregistre\n");
+		printf("Justificatif enregistre\n");
 	}
 	else {
 		absences[absence_id - 1].etat = JUSTIFICATIF_RECU; // Justificatif reçu dans les temps
-		prunsigned intf("Justificatif enregistre\n");
+		printf("Justificatif enregistre\n");
 	}
 
 	// Enregistre le justificatif (même si tardif, pour conserver une trace)
@@ -199,11 +199,11 @@ void depot_justificatif(Absence absences[], unsigned int nb_absence, unsigned in
 
 // Fonction pour afficher les absences en attente de validation
 void afficher_absences_attente_validation(Absence absences[], unsigned int nb_absence) {
-	prunsigned intf("Liste des absences en attente de validation :\n");
+	printf("Liste des absences en attente de validation :\n");
 	for (unsigned int i = 0; i < nb_absence; i++) {
 		// On n'affiche que les absences en attente de validation (ni validées ni non justifiées)
 		if (absences[i].etat == JUSTIFICATIF_NON_RECU) {
-			prunsigned intf("Absence ID: %d, Date: Jour %d, Etat: En attente de validation\n", absences[i].id, absences[i].num_jour);
+			printf("Absence ID: %d, Date: Jour %d, Etat: En attente de validation\n", absences[i].id, absences[i].num_jour);
 		}
 	}
 }
@@ -214,12 +214,12 @@ void faire_validations(Absence absences[], Etudiant etudiants[], unsigned int nb
 	for (unsigned unsigned int i = 0; i < nb_absence; i++) {
 		if (absences[i].etat != NON_VALIDE && absences[i].etat != JUSTIFICATIF_NON_RECU) {
 			unsigned int indiceEtu = absences[i].id_Etudiant - 1;
-			prunsigned intf("[%d] (%d) %s %d %d/%s %s\n", absences[i].id, absences[i].id_Etudiant, etudiants[indiceEtu].nom, etudiants[indiceEtu].groupe, absences[i].num_jour, absences[i].demi_journee == 0 ? "am" : "pm", absences[i].justificatif);
+			printf("[%d] (%d) %s %d %d/%s %s\n", absences[i].id, absences[i].id_Etudiant, etudiants[indiceEtu].nom, etudiants[indiceEtu].groupe, absences[i].num_jour, absences[i].demi_journee == 0 ? "am" : "pm", absences[i].justificatif);
 			cpt++;
 		}
 	}
 	if (cpt == 0) {
-		prunsigned intf("Aucune validation en attente\n");
+		printf("Aucune validation en attente\n");
 	}
 }
 
@@ -232,7 +232,7 @@ void faire_validations(Absence absences[], Etudiant etudiants[], unsigned int nb
 		if (absences[i].etat == JUSTIFICATIF_RECU) {
 			for (unsigned int j = 0; j < nb_etudiants; j++) {
 				if (etudiants[j].id == absences[i].id) {
-					prunsigned intf("[%d] (%d) %-13s %2d %d/%s (%s)\n",
+					printf("[%d] (%d) %-13s %2d %d/%s (%s)\n",
 						i + 1, etudiants[j].id, etudiants[j].nom,
 						etudiants[j].groupe, absences[i].num_jour,
 						absences[i].demi_journee == 0 ? "am" : "pm",
@@ -244,7 +244,7 @@ void faire_validations(Absence absences[], Etudiant etudiants[], unsigned int nb
 		}
 	}
 	if (en_attente == 0) {
-		prunsigned intf("Aucune validation en attente\n");
+		printf("Aucune validation en attente\n");
 	}
 }*/
 
@@ -253,25 +253,25 @@ void faire_validations(Absence absences[], Etudiant etudiants[], unsigned int nb
 void validation(Absence absences[], unsigned int id_absence, char validation[MAX_VALIDATION_LENGTH], unsigned int nb_absence) {
 	// Vérifie si l'identifiant de l'absence est correcte
 	if (id_absence == 0) {
-		prunsigned intf("Identifiant incorrect\n");
+		printf("Identifiant incorrect\n");
 		return;
 	}
 	if (id_absence > nb_absence || absences[id_absence - 1].etat < JUSTIFICATIF_RECU) {
-		prunsigned intf("Identifiant incorrect\n");
+		printf("Identifiant incorrect\n");
 		return;
 	}
 	// Vérifie si la saisie de l'identifiant est correcte
 	if (strcmp(validation, "ok") != 0 && strcmp(validation, "ko") != 0) {
-		prunsigned intf("Code incorrect\n");
+		printf("Code incorrect\n");
 		return;
 	}
 	// Vérifie si la validation est déjà connue
 	if (absences[id_absence - 1].etat == VALIDE) {
-		prunsigned intf("Validation deja connue\n");
+		printf("Validation deja connue\n");
 		return;
 	}
 	else {
-		prunsigned intf("Validation enregistree\n");
+		printf("Validation enregistree\n");
 		absences[id_absence - 1].etat = VALIDE;
 
 	}
@@ -292,12 +292,12 @@ void liste_defaillants(Etudiant etudiants[], Absence absences[], unsigned int nu
 			}
 		}
 		if (total_absences_non_justifiees >= 5) {
-			prunsigned intf("(%d) %-13s %2d %d\n", etudiants[i].id, etudiants[i].nom, etudiants[i].groupe, total_absences_non_justifiees);
+			printf("(%d) %-13s %2d %d\n", etudiants[i].id, etudiants[i].nom, etudiants[i].groupe, total_absences_non_justifiees);
 			defaillant_trouve = 1; // Indication qu'un défaillant a été trouvé
 		}
 	}
 	if (defaillant_trouve == 0) {
-		prunsigned intf("Aucun defaillant\n");
+		printf("Aucun defaillant\n");
 	}
 }
 
@@ -309,12 +309,12 @@ void commande_inscription(Etudiant etudiants[], unsigned int* nombre_etudiants) 
 	unsigned int groupe;
 	scanf("%s %s", nom, groupe_str);
 	if (!est_entier(groupe_str)) {
-		prunsigned intf("Le groupe doit etre un nombre entier\n");
+		printf("Le groupe doit etre un nombre entier\n");
 		return;
 	}
 	groupe = atoi(groupe_str);
 	if (verif_inscrit(etudiants, *nombre_etudiants, nom, groupe) >= 0) {
-		prunsigned intf("Nom incorrect\n");
+		printf("Nom incorrect\n");
 		return;
 	}
 	inscription_etudiant(etudiants, nom, groupe, *nombre_etudiants);
@@ -415,7 +415,7 @@ unsigned int main() {
 			break;
 		}
 		else {
-			prunsigned intf("Commande inconnue\n");
+			printf("Commande inconnue\n");
 		}
 	} while (true);
 
