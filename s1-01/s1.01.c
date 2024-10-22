@@ -137,6 +137,11 @@ int compter_absence(Absence absences[], int jour_courant, int etudiant_id) {
 }
 // Affiche le tableau d'étudiants complet et trié
 void liste_etudiants(Etudiant etudiants[], Absence absences[], int num_jour, int num_etudiants) {
+    if (num_etudiants == 0) {
+        printf("Aucun inscrit\n");
+        return;
+    }
+
     if (num_jour >= 1) {
         qsort(etudiants, num_etudiants, sizeof(Etudiant), compare_etudiants);
         for (int i = 0; i < num_etudiants; i++) {
@@ -197,6 +202,7 @@ void afficher_absences_attente_validation(Absence absences[], int nb_absence) {
 }
 
 // C5 
+
 /*
 
 void faire_validations(Absence absences[], Etudiant etudiants[], int nb_absence, int nb_etudiants) {
@@ -220,8 +226,8 @@ void faire_validations(Absence absences[], Etudiant etudiants[], int nb_absence,
         printf("Aucune validation en attente\n");
     }
 }
-*/
 
+*/
 /** C6 **/
 void faire_validation(Absence absences[], int id_absence, char validation[MAX_VALIDATION_LENGTH], int nb_absence) {
     // Vérifie si l'identifiant de l'absence est correcte
