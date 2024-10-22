@@ -148,6 +148,7 @@ void liste_etudiants(Etudiant etudiants[], Absence absences[], int num_jour, int
         printf("Date incorrecte\n");
     }
 }
+
 //** C4 **//
 // Dépôt d'un justificatif pour une absence
 void depot_justificatif(Absence absences[], int nb_absence, int absence_id, int num_jour, const char justificatif[MAX_JUSTIFICATIF_LENGTH]) {
@@ -253,7 +254,7 @@ void faire_validation(Absence absences[], int id_absence, char validation[MAX_VA
 
 
 // C8 Commande pour afficher les étudiants défaillants
-/*
+
 void liste_defaillants(Etudiant etudiants[], Absence absences[], int num_jour, int nb_etudiants) {
     int defaillant_trouve = 0; // Utilisation d'un entier à la place du booléen
     for (int i = 0; i < nb_etudiants; i++) {
@@ -272,7 +273,7 @@ void liste_defaillants(Etudiant etudiants[], Absence absences[], int num_jour, i
         printf("Aucun defaillant\n");
     }
 }
-*/
+
 
 /*C1 */
 //Inscrit un étudint
@@ -337,7 +338,7 @@ void commande_etudiant() {
     // TODO: Implement this command
 }
 /*C8 commande*/
-/*
+
 void commande_liste_defaillants(Etudiant etudiants[], Absence absences[], int nb_etudiants) {
     int num_jour;
 
@@ -345,7 +346,7 @@ void commande_liste_defaillants(Etudiant etudiants[], Absence absences[], int nb
 
     liste_defaillants(etudiants, absences, num_jour, nb_etudiants);
 }
-*/
+
 
 int main() {
     char commande[20] = "";
@@ -386,7 +387,7 @@ int main() {
         }
         else if (strcmp(commande, "defaillants") == 0) // C8
         {
-            //commande_defaillants();
+            commande_liste_defaillants(etudiants, absences, nombre_etudiants);
         }
         else if (strcmp(commande, "exit") == 0) // C0
         {
