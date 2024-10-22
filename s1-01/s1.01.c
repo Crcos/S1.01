@@ -111,7 +111,7 @@ void enregistrement_absence(Etudiant etudiants[], unsigned int nb_etudiants, Abs
 	}
 	// Enregistre la nouvelle absence si elle n'est pas connue
 	absences[*nb_absences].id_Etudiant = id_Etu;
-	absences[*nb_absences].id = *nb_absences + 1;
+	absences[*nb_absences].id =id_Etu;
 	absences[*nb_absences].num_jour = num_jour;
 	absences[*nb_absences].demi_journee = (strcmp(demi_journee, "am") == 0) ? 0 : 1;
 	absences[*nb_absences].etat = JUSTIFICATIF_NON_RECU;
@@ -176,12 +176,11 @@ void depot_justificatif(Absence absences[], unsigned int nb_absence, unsigned in
 		return;
 	}
 	// Vérifie si la date du justificatif est correcte (après la date d'absence)
-	for (unsigned int i = 0; i < nb_absence; i++) {
-		if (num_jour < absences[i].num_jour) {
-			printf("Date incorrecte\n");
+	if (absences[absence_id - 1].num_jour > num_jour){
+		printf("Date incorrect ");
 			return;
 		}
-	}
+	
 
 	// Vérifie si le dépôt du justificatif est dans le délai autorisé
 	if (num_jour > absences[absence_id - 1].num_jour + DELAIS_JUSTIFICATIF) {
@@ -254,9 +253,7 @@ void validation(Absence absences[], unsigned int id_absence, char validation[MAX
 }
 
 
-
-
-// C8 Commande pour afficher les étudiants défaillants
+/* C8 Commande pour afficher les étudiants défaillants */
 
 void liste_defaillants(Etudiant etudiants[], Absence absences[], unsigned int num_jour, unsigned int nb_etudiants) {
 	unsigned int defaillant_trouve = 0; 
