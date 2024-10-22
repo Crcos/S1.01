@@ -62,11 +62,11 @@ void inscription_etudiant(Etudiant etudiants[], char* nom, unsigned int groupe, 
 	// Assigne le groupe de l'étudiant
 	etudiants[nb_etudiants].groupe = groupe;
 	// Affiche un message de confirmation d'inscription
-	printf("Inscription enregistree (%d)je \n", nb_etudiants + 1);
+	printf("Inscription enregistree (%d) \n", nb_etudiants + 1);
 }
 
 // Vérifie si l'étudiant est déjà inscrit avec le même nom et groupe
-unsigned int verif_inscrit(Etudiant etudiants[], unsigned int nb_etudiants, char nom[], unsigned int groupe) {
+int verif_inscrit(Etudiant etudiants[], unsigned int nb_etudiants, char nom[], unsigned int groupe) {
 	// Vérifie si l'étudiant est déjà inscrit avec le même nom et groupe
 	for (unsigned int i = 0; i < nb_etudiants; i++) {
 		if (strcmp(etudiants[i].nom, nom) == 0 && etudiants[i].groupe == groupe) {
@@ -225,30 +225,6 @@ void faire_validations(Absence absences[], Etudiant etudiants[], unsigned int nb
 
 
 
-
-/*void faire_validations(Absence absences[], Etudiant etudiants[], unsigned int nb_absence, unsigned int nb_etudiants) {
-	unsigned int en_attente = 0; // Utilisation d'un entier à la place du booléen
-	for (unsigned int i = 0; i < nb_absence; i++) {
-		if (absences[i].etat == JUSTIFICATIF_RECU) {
-			for (unsigned int j = 0; j < nb_etudiants; j++) {
-				if (etudiants[j].id == absences[i].id) {
-					printf("[%d] (%d) %-13s %2d %d/%s (%s)\n",
-						i + 1, etudiants[j].id, etudiants[j].nom,
-						etudiants[j].groupe, absences[i].num_jour,
-						absences[i].demi_journee == 0 ? "am" : "pm",
-						absences[i].justificatif);
-					en_attente = 1; // Indication qu'une validation est en attente
-					break;
-				}
-			}
-		}
-	}
-	if (en_attente == 0) {
-		printf("Aucune validation en attente\n");
-	}
-}*/
-
-
 /** C6 **/
 void validation(Absence absences[], unsigned int id_absence, char validation[MAX_VALIDATION_LENGTH], unsigned int nb_absence) {
 	// Vérifie si l'identifiant de l'absence est correcte
@@ -302,7 +278,7 @@ void liste_defaillants(Etudiant etudiants[], Absence absences[], unsigned int nu
 }
 
 
-/*C1 */
+/*C1 Commande */
 //Inscrit un étudunsigned int
 void commande_inscription(Etudiant etudiants[], unsigned int* nombre_etudiants) {
 	char nom[MAX_NOM_LENGTH + 1], groupe_str[20];
