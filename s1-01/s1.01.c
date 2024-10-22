@@ -77,7 +77,7 @@ int verif_inscrit(Etudiant etudiants[], unsigned int nb_etudiants, char nom[], u
 }
 //**C2**//
 // Enregistre une absence
-void enregistrement_absence(Etudiant etudiants[], unsigned int nb_etudiants, Absence absences[], unsigned int id_Etu, unsigned int num_jour, const char* demi_journee, unsigned int* nb_absences, unsigned int id_Etudiant) {
+void enregistrement_absence(Etudiant etudiants[], unsigned int nb_etudiants, Absence absences[], unsigned int id_Etu, unsigned int num_jour, const char* demi_journee, unsigned int* nb_absences) {
 	// Vérifie si l'identifiant de l'étudiant existe
 	unsigned int etudiant_existe = 0; // 0 pour false, 1 pour true
 	for (unsigned int i = 0; i < nb_etudiants; i++) {
@@ -90,28 +90,32 @@ void enregistrement_absence(Etudiant etudiants[], unsigned int nb_etudiants, Abs
 		printf("Identifiant incorrect\n");
 		return;
 	}
+
 	// Vérifie si la demi-journée est valide
 	if (strcmp(demi_journee, "am") != 0 && strcmp(demi_journee, "pm") != 0) {
 		printf("Demi-journee incorrecte\n");
 		return;
 	}
+
 	// Vérifie si le jour est dans la plage autorisée
 	if (num_jour < JOURS_MIN || num_jour > JOURS_MAX) {
 		printf("Date incorrecte\n");
 		return;
 	}
+
 	// Vérifie si l'absence est déjà connue
 	for (unsigned int i = 0; i < *nb_absences; i++) {
-		if (absences[i].id == id_Etu && absences[i].num_jour == num_jour &&
+		if (absences[i].id_Etudiant == id_Etu && absences[i].num_jour == num_jour &&
 			((strcmp(demi_journee, "am") == 0 && absences[i].demi_journee == 0) ||
 				(strcmp(demi_journee, "pm") == 0 && absences[i].demi_journee == 1))) {
 			printf("Absence deja connue\n");
 			return;
 		}
 	}
+
 	// Enregistre la nouvelle absence si elle n'est pas connue
 	absences[*nb_absences].id_Etudiant = id_Etu;
-	absences[*nb_absences].id =id_Etu;
+	absences[*nb_absences].id = *nb_absences + 1;  // Assignation de l'ID unique à l'absence
 	absences[*nb_absences].num_jour = num_jour;
 	absences[*nb_absences].demi_journee = (strcmp(demi_journee, "am") == 0) ? 0 : 1;
 	absences[*nb_absences].etat = JUSTIFICATIF_NON_RECU;
@@ -176,11 +180,10 @@ void depot_justificatif(Absence absences[], unsigned int nb_absence, unsigned in
 		return;
 	}
 	// Vérifie si la date du justificatif est correcte (après la date d'absence)
-	if (absences[absence_id - 1].num_jour > num_jour){
-		printf("Date incorrect ");
-			return;
-		}
-	
+	if (absences[absence_id - 1].num_jour > num_jour) {
+		printf("Date incorrect \n ");
+		return;
+	}
 
 	// Vérifie si le dépôt du justificatif est dans le délai autorisé
 	if (num_jour > absences[absence_id - 1].num_jour + DELAIS_JUSTIFICATIF) {
@@ -213,7 +216,7 @@ void faire_validations(Absence absences[], Etudiant etudiants[], unsigned int nb
 	for (unsigned int i = 0; i < nb_absence; i++) {
 		if (absences[i].etat != NON_VALIDE && absences[i].etat != JUSTIFICATIF_NON_RECU) {
 			unsigned int indiceEtu = absences[i].id_Etudiant - 1;
-			printf("[%d] (%d) %s %d %d/%s %s\n", absences[i].id, absences[i].id_Etudiant, etudiants[indiceEtu].nom, etudiants[indiceEtu].groupe, absences[i].num_jour, absences[i].demi_journee == 0 ? "am" : "pm", absences[i].justificatif);
+			printf("[%d] (%d) %s %d %d/%s (%s) \n", absences[i].id, absences[i].id_Etudiant, etudiants[indiceEtu].nom, etudiants[indiceEtu].groupe, absences[i].num_jour, absences[i].demi_journee == 0 ? "am" : "pm", absences[i].justificatif);
 			cpt++;
 		}
 	}
@@ -253,10 +256,12 @@ void validation(Absence absences[], unsigned int id_absence, char validation[MAX
 }
 
 
-/* C8 Commande pour afficher les étudiants défaillants */
+
+
+// C8 Commande pour afficher les étudiants défaillants
 
 void liste_defaillants(Etudiant etudiants[], Absence absences[], unsigned int num_jour, unsigned int nb_etudiants) {
-	unsigned int defaillant_trouve = 0; 
+	unsigned int defaillant_trouve = 0;
 	for (unsigned int i = 0; i < nb_etudiants; i++) {
 		unsigned int total_absences_non_justifiees = 0;
 		for (unsigned int j = 0; j < MAX_ABSENCES; j++) {
@@ -298,7 +303,7 @@ void commande_absence(Etudiant etudiants[], unsigned int nombre_etudiants, Absen
 	unsigned int etudiant_id, num_jour;
 	char demi_journee[MAX_DEMI_JOURNE_LENGTH];
 	scanf("%d %d %s", &etudiant_id, &num_jour, demi_journee);
-	enregistrement_absence(etudiants, nombre_etudiants, absences, etudiant_id, num_jour, demi_journee, nb_absence, etudiant_id);
+	enregistrement_absence(etudiants, nombre_etudiants, absences, etudiant_id, num_jour, demi_journee, nb_absence);
 }
 /*C3 commande*/
 void commande_etudiants(Etudiant etudiants[], Absence absences[], unsigned int nombre_etudiants) {
