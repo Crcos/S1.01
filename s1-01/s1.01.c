@@ -42,15 +42,7 @@ typedef struct {
     Etat_abs etat; // Stock l'etat d'une absence
 } Absence;
 
-// Vérifie si l'étudiant est déjà inscrit avec le même nom et groupe
-int verif_inscrit(Etudiant etudiants[], int nb_etudiants, char nom[], int groupe) {
-    for (int i = 0; i < nb_etudiants; i++) {
-        if (strcmp(etudiants[i].nom, nom) == 0 && etudiants[i].groupe == groupe) {
-            return i;
-        }
-    }
-    return -1;
-}
+
 // Vérifie si une chaîne est un entier
 int est_entier(const char* str) {
     for (int i = 0; str[i] != '\0'; i++) {
@@ -60,28 +52,26 @@ int est_entier(const char* str) {
 }
 //**C1**//
 //Inscrit un etudiant
-void effectuer_inscription(Etudiant etudiants[], int* nombre_etudiants) {
-    char nom[MAX_NOM_LENGTH + 1], groupe_str[20];
-    int groupe;
-    scanf("%s %s", nom, groupe_str);
-    if (!est_entier(groupe_str)) {
-        printf("Le groupe doit etre un nombre entier\n");
-        return;
-    }
-    groupe = atoi(groupe_str);
-    if (verif_inscrit(etudiants, *nombre_etudiants, nom, groupe) >= 0) {
-        printf("Nom incorrect\n");
-        return;
-    }
+void inscription_etudiant(Etudiant etudiants[], char* nom, int groupe, int nb_etudiants) {
     // Assigne un nouvel identifiant à l'étudiant
-    etudiants[*nombre_etudiants].id = *nombre_etudiants + 1;
+    etudiants[nb_etudiants].id = nb_etudiants + 1;
     // Copie le nom de l'étudiant
-    strncpy(etudiants[*nombre_etudiants].nom, nom, MAX_NOM_LENGTH);
+    strncpy(etudiants[nb_etudiants].nom, nom, MAX_NOM_LENGTH);
     // Assigne le groupe de l'étudiant
-    etudiants[*nombre_etudiants].groupe = groupe;
+    etudiants[nb_etudiants].groupe = groupe;
     // Affiche un message de confirmation d'inscription
-    printf("Inscription enregistree (%d)\n", *nombre_etudiants + 1);
-    (*nombre_etudiants)++;
+    printf("Inscription enregistree (%d)\n", nb_etudiants + 1);
+}
+
+// Vérifie si l'étudiant est déjà inscrit avec le même nom et groupe
+int verif_inscrit(Etudiant etudiants[], int nb_etudiants, char nom[], int groupe) {
+    // Vérifie si l'étudiant est déjà inscrit avec le même nom et groupe
+    for (int i = 0; i < nb_etudiants; i++) {
+        if (strcmp(etudiants[i].nom, nom) == 0 && etudiants[i].groupe == groupe) {
+            return i;
+        }
+    }
+    return -1;
 }
 //**C2**//
 // Enregistre une absence
@@ -205,12 +195,12 @@ void afficher_absences_attente_validation(Absence absences[], int nb_absence) {
     }
 }
 
-/*C5 (base à modifier)*/
-
+// C5 
 /*
-void liste_validations(Absence absences[], Etudiant etudiants[], int nb_absences, int nb_etudiants) {
-    bool en_attente = false;
-    for (int i = 0; i < nb_absences; i++) {
+
+void faire_validations(Absence absences[], Etudiant etudiants[], int nb_absence, int nb_etudiants) {
+    int en_attente = 0; // Utilisation d'un entier à la place du booléen
+    for (int i = 0; i < nb_absence; i++) {
         if (absences[i].etat == JUSTIFICATIF_RECU) {
             for (int j = 0; j < nb_etudiants; j++) {
                 if (etudiants[j].id == absences[i].id) {
@@ -219,67 +209,20 @@ void liste_validations(Absence absences[], Etudiant etudiants[], int nb_absences
                         etudiants[j].groupe, absences[i].num_jour,
                         absences[i].demi_journee == 0 ? "am" : "pm",
                         absences[i].justificatif);
-                    en_attente = true;
+                    en_attente = 1; // Indication qu'une validation est en attente
                     break;
                 }
             }
         }
     }
-    if (!en_attente) {
+    if (en_attente == 0) {
         printf("Aucune validation en attente\n");
     }
 }
-
-*/
-
-/* C6 à modifier (base) */
-
-/*
-void validation_justificatif(Absence absences[], int absence_id, const char* validation_code) {
-    if (absence_id <= 0 || absence_id > MAX_ABSENCES || absences[absence_id - 1].id == 0) {
-        printf("Identifiant incorrect\n");
-        return;
-    }
-    if (strcmp(validation_code, "ok") == 0) {
-        absences[absence_id - 1].etat = VALIDE;
-        printf("Validation enregistree\n");
-    } else if (strcmp(validation_code, "ko") == 0) {
-        absences[absence_id - 1].etat = NON_VALIDE;
-        printf("Validation enregistree\n");
-    } else {
-        printf("Code incorrect\n");
-    }
-}
-
-*/
-
-
-/* C8 (base à modifier) */
-
-/*
-void liste_defaillants(Etudiant etudiants[], Absence absences[], int num_jour, int nb_etudiants) {
-    bool defaillant_trouve = false;
-    for (int i = 0; i < nb_etudiants; i++) {
-        int total_absences_non_justifiees = 0;
-        for (int j = 0; j < MAX_ABSENCES; j++) {
-            if (absences[j].id == etudiants[i].id && absences[j].num_jour <= num_jour && absences[j].etat == NON_VALIDE) {
-                total_absences_non_justifiees++;
-            }
-        }
-        if (total_absences_non_justifiees >= 5) {
-            printf("(%d) %-13s %2d %d\n", etudiants[i].id, etudiants[i].nom, etudiants[i].groupe, total_absences_non_justifiees);
-            defaillant_trouve = true;
-        }
-    }
-    if (!defaillant_trouve) {
-        printf("Aucun defaillant\n");
-    }
-}
-
 */
 
 /** C6 **/
-void validation(Absence absences[], int id_absence, char validation[MAX_VALIDATION_LENGTH], int nb_absence) {
+void faire_validation(Absence absences[], int id_absence, char validation[MAX_VALIDATION_LENGTH], int nb_absence) {
     // Vérifie si l'identifiant de l'absence est correcte
     if (id_absence == 0) {
         printf("Identifiant incorrect\n");
@@ -305,6 +248,50 @@ void validation(Absence absences[], int id_absence, char validation[MAX_VALIDATI
 
     }
 }
+
+
+
+
+// C8 Commande pour afficher les étudiants défaillants
+/*
+void liste_defaillants(Etudiant etudiants[], Absence absences[], int num_jour, int nb_etudiants) {
+    int defaillant_trouve = 0; // Utilisation d'un entier à la place du booléen
+    for (int i = 0; i < nb_etudiants; i++) {
+        int total_absences_non_justifiees = 0;
+        for (int j = 0; j < MAX_ABSENCES; j++) {
+            if (absences[j].id == etudiants[i].id && absences[j].num_jour <= num_jour && absences[j].etat == NON_VALIDE) {
+                total_absences_non_justifiees++;
+            }
+        }
+        if (total_absences_non_justifiees >= 5) {
+            printf("(%d) %-13s %2d %d\n", etudiants[i].id, etudiants[i].nom, etudiants[i].groupe, total_absences_non_justifiees);
+            defaillant_trouve = 1; // Indication qu'un défaillant a été trouvé
+        }
+    }
+    if (defaillant_trouve == 0) {
+        printf("Aucun defaillant\n");
+    }
+}
+*/
+
+/*C1 */
+//Inscrit un étudint
+void commande_inscription(Etudiant etudiants[], int* nombre_etudiants) {
+    char nom[MAX_NOM_LENGTH + 1], groupe_str[20];
+    int groupe;
+    scanf("%s %s", nom, groupe_str);
+    if (!est_entier(groupe_str)) {
+        printf("Le groupe doit etre un nombre entier\n");
+        return;
+    }
+    groupe = atoi(groupe_str);
+    if (verif_inscrit(etudiants, *nombre_etudiants, nom, groupe) >= 0) {
+        printf("Nom incorrect\n");
+        return;
+    }
+    inscription_etudiant(etudiants, nom, groupe, *nombre_etudiants);
+    (*nombre_etudiants)++;
+}
 /*C2 commande*/
 void commande_absence(Etudiant etudiants[], int nombre_etudiants, Absence absences[], int* nb_absence) {
     int etudiant_id, num_jour;
@@ -328,24 +315,37 @@ void commande_justificatif(Absence absences[], int nb_absence) {
     depot_justificatif(absences, nb_absence, absence_id, num_jour, justificatif);
 }
 /*C5 commande*/
-void commande_validations() {
-    // TODO: Implement this command
+/*
+void commande_validations(Absence absences[], Etudiant etudiants[], int nb_absence, int nb_etudiants) {
+    int absence_id;
+    char validation[MAX_VALIDATION_LENGTH];
+
+    scanf("%d %s", &absence_id, validation);
+
+    faire_validations(absences, etudiants, absence_id, validation, nb_absence, nb_etudiants);
 }
+*/
 /*C6 commande*/
 void commande_validation(Absence absences[], int nb_absence) {
     int absence_id;
     char validations[MAX_VALIDATION_LENGTH];
     scanf("%d %s", &absence_id, validations);
-    validation(absences, absence_id, validations, nb_absence);
+    faire_validation(absences, absence_id, validations, nb_absence);
 }
 /*C7 commande*/
 void commande_etudiant() {
     // TODO: Implement this command
 }
 /*C8 commande*/
-void commande_defaillants() {
-    // TODO: Implement this command
+/*
+void commande_liste_defaillants(Etudiant etudiants[], Absence absences[], int nb_etudiants) {
+    int num_jour;
+
+    scanf("%d", &num_jour);
+
+    liste_defaillants(etudiants, absences, num_jour, nb_etudiants);
 }
+*/
 
 int main() {
     char commande[20] = "";
@@ -358,7 +358,7 @@ int main() {
         scanf("%s", commande);
         if (strcmp(commande, "inscription") == 0) // C1
         {
-            effectuer_inscription(etudiants, &nombre_etudiants);
+            commande_inscription(etudiants, &nombre_etudiants);
         }
         else if (strcmp(commande, "absence") == 0) // C2
         {
@@ -374,7 +374,7 @@ int main() {
         }
         else if (strcmp(commande, "validations") == 0) // C5
         {
-            commande_validations();
+            //commande_validations(absences, etudiants, nb_absence, nombre_etudiants);
         }
         else if (strcmp(commande, "validation") == 0) // C6
         {
@@ -386,7 +386,7 @@ int main() {
         }
         else if (strcmp(commande, "defaillants") == 0) // C8
         {
-            commande_defaillants();
+            //commande_defaillants();
         }
         else if (strcmp(commande, "exit") == 0) // C0
         {
