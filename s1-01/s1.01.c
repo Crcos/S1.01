@@ -36,7 +36,7 @@ typedef struct {
 // Structure représentant une absence
 typedef struct {
 	unsigned int id; // Identifiant unique de l'absence
-	unsigned unsigned int demi_journee; // Demi-journée concernée
+	unsigned int demi_journee; // Demi-journée concernée
 	unsigned int num_jour; // Numéro de jour concerné
 	char justificatif[MAX_JUSTIFICATIF_LENGTH]; // Justificatif (si enregistré)
 	unsigned int deja_valide; // Stock les absence_id deja validés
@@ -210,8 +210,8 @@ void afficher_absences_attente_validation(Absence absences[], unsigned int nb_ab
 
 //**C5**//
 void faire_validations(Absence absences[], Etudiant etudiants[], unsigned int nb_absence) {
-	unsigned unsigned int cpt = 0;
-	for (unsigned unsigned int i = 0; i < nb_absence; i++) {
+	unsigned int cpt = 0;
+	for (unsigned int i = 0; i < nb_absence; i++) {
 		if (absences[i].etat != NON_VALIDE && absences[i].etat != JUSTIFICATIF_NON_RECU) {
 			unsigned int indiceEtu = absences[i].id_Etudiant - 1;
 			printf("[%d] (%d) %s %d %d/%s %s\n", absences[i].id, absences[i].id_Etudiant, etudiants[indiceEtu].nom, etudiants[indiceEtu].groupe, absences[i].num_jour, absences[i].demi_journee == 0 ? "am" : "pm", absences[i].justificatif);
