@@ -216,7 +216,16 @@ void faire_validations(Absence absences[], Etudiant etudiants[], unsigned int nb
 	for (unsigned int i = 0; i < nb_absence; i++) {
 		if (absences[i].etat != NON_VALIDE && absences[i].etat != JUSTIFICATIF_NON_RECU) {
 			unsigned int indiceEtu = absences[i].id_Etudiant - 1;
-			printf("[%d] (%d) %s %d %d/%s (%s) \n", absences[i].id, absences[i].id_Etudiant, etudiants[indiceEtu].nom, etudiants[indiceEtu].groupe, absences[i].num_jour, absences[i].demi_journee == 0 ? "am" : "pm", absences[i].justificatif);
+
+			// Supprimer les sauts de ligne éventuels à la fin du justificatif
+			char* justificatif = absences[i].justificatif;
+			size_t len = strlen(justificatif);
+			if (len > 0 && justificatif[len - 1] == '\n') {
+				justificatif[len - 1] = '\0';  // Remplacer le '\n' par un caractère de fin de chaîne
+			}
+
+			// Afficher les détails correctement
+			printf("[%d] (%d) %s %d %d/%s (%s)\n", absences[i].id, absences[i].id_Etudiant, etudiants[indiceEtu].nom, etudiants[indiceEtu].groupe, absences[i].num_jour, absences[i].demi_journee == 0 ? "am" : "pm", justificatif);
 			cpt++;
 		}
 	}
